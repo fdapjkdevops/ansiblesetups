@@ -1,0 +1,15 @@
+[Unit]
+Description=samba mount for sambafiles
+Requires=systemd-networkd.service
+After=network-online.target
+Wants=network-online.target
+
+[Mount]
+What=//NAS1.mshome.loc/ISOs
+Where=/smb/ISO
+Options=vers=2.0,credentials=/etc/.smbcredentials,rw,x-systemd.automount,uid=1000
+Type=cifs
+TimeoutSec=30
+
+[Install]
+WantedBy=multi-user.target

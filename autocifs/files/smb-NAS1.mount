@@ -1,0 +1,12 @@
+[Unit]
+Description=samba mount for NAS1/Volume_1
+
+[Mount]
+What=//NAS1.mshome.loc/Volume_1
+Where=/smb/NAS1
+Options=vers=2.0,credentials=/etc/.smbcredentials,rw,x-systemd.automount,uid=1000
+Type=cifs
+TimeoutSec=30
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,74 @@
+#- hosts: dns2
+#- hosts: dns1ping
+#- hosts: alldns
+- hosts: dns1
+  become: yes
+  tasks:
+    - name: Create /smb/NAS
+      file:
+         path: /smb/NAS 
+         state: directory
+         owner: root
+         group: root
+           
+    - name: Create /smb/ISO
+      file:
+         path: /smb/ISO 
+         state: directory
+         owner: root
+         group: root
+ 
+    - name: Install cifs-utils
+      apt:
+        state: latest
+        update_cache: true
+        pkg:
+        - cifs-utils
+ 
+    - name: Copy .smbcredentials
+      copy:
+         src: ./.smbcredentials
+         dest: /etc/.smbcredentials
+         owner: root
+         group: root
+
+    - name: Set permissions on creds
+      shell:
+         chmod 600 /etc/.smbcredentials
+    
+    - name: Create the systemd automount for NAS1
+      copy:
+         src: ./smb-NAS1.automount
+         dest: /etc/systemd/system/smb-NAS1.automount
+         owner: root
+         group: root
+
+    - name: Create the systemd mount for NAS1
+      copy:
+         src: ./smb-NAS1.mount
+         dest: /etc/systemd/system/smb-NAS1.mount
+         owner: root
+         group: root
+
+    - name: Create the systemd automount for ISO
+      copy:
+         src: ./smb-ISO.automount
+         dest: /etc/systemd/system/smb-ISO.automount
+         owner: root
+         group: root
+
+    - name: Create the systemd mount for ISO
+      copy:
+         src: ./smb-ISO.mount
+         dest: /etc/systemd/system/smb-ISO.mount
+         owner: root
+         group: root
+
+    - name: Automount NAS1
+      shell:
+        systemctl enable smb-NAS1.automount
+   
+    - name: Automount ISO
+      shell:
+        systemctl enable smb-ISO.automount
+    
